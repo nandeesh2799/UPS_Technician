@@ -6,9 +6,9 @@ import 'package:crypto/crypto.dart';
 
 class StorageService {
   // TODO: Replace these with your actual Cloudinary credentials
-  static const String _cloudName = 'djyevccou';
-  static const String _apiKey = '222753221969373';
-  static const String _apiSecret = 'UtW8LVmaLAr6861cm8dxzgV7pbw';
+  static const String _cloudName = 'YOUR_CLOUD_NAME';
+  static const String _apiKey = 'YOUR_API_KEY';
+  static const String _apiSecret = 'YOUR_API_SECRET';
 
   String _generateSignature(int timestamp) {
     final stringToSign = 'timestamp=$timestamp$_apiSecret';
