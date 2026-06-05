@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "480301507503",
+    "project_id": "ups-service-tech-2799",
+    "storage_bucket": "ups-service-tech-2799.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480301507503:android:66f913e7c49a004cfa055a",
+        "android_client_info": {
+          "package_name": "com.karunadu.ups_service_manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxVyKeeCjl3J5siUzHraPm2XcG6qXcqSc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
