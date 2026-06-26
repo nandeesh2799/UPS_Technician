@@ -8,6 +8,7 @@ class KpiCard extends StatelessWidget {
   final bool isCurrency;
   final IconData icon;
   final Color color;
+  final VoidCallback? onTap;
 
   const KpiCard({
     super.key,
@@ -16,6 +17,7 @@ class KpiCard extends StatelessWidget {
     this.isCurrency = false,
     required this.icon,
     required this.color,
+    this.onTap,
   });
 
   @override
@@ -32,45 +34,53 @@ class KpiCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(icon, size: 20, color: color),
-            ),
-            const Spacer(),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: AnimatedCounter(
-                count: value,
-                isCurrency: isCurrency,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: -0.5,
-                    ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey.shade500,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 11,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(24),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(14),
                   ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+                  child: Icon(icon, size: 20, color: color),
+                ),
+                const Spacer(),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: AnimatedCounter(
+                    count: value,
+                    isCurrency: isCurrency,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: -0.5,
+                        ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.grey.shade500,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 11,
+                      ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.9, 0.9));
   }
 }
+

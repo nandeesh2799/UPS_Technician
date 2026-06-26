@@ -11,7 +11,7 @@ class SettingsProvider extends ChangeNotifier {
   bool _isLoading = true;
 
   CompanySettingsModel get settings => _settings;
-  bool get isDarkMode => _isDarkMode;
+  bool get isDarkMode => false;
   bool get isLoading => _isLoading;
 
   SettingsProvider() {

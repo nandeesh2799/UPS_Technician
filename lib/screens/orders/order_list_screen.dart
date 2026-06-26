@@ -7,9 +7,11 @@ import '../../widgets/empty_state.dart';
 import '../../widgets/error_boundary.dart';
 import 'widgets/order_card.dart';
 import 'order_wizard/order_wizard_screen.dart';
+import '../../utils/extensions.dart';
 
 class OrderListScreen extends StatefulWidget {
-  const OrderListScreen({super.key});
+  final String? initialStatusFilter;
+  const OrderListScreen({super.key, this.initialStatusFilter});
 
   @override
   State<OrderListScreen> createState() => _OrderListScreenState();
@@ -17,12 +19,13 @@ class OrderListScreen extends StatefulWidget {
 
 class _OrderListScreenState extends State<OrderListScreen> {
   String _searchQuery = '';
-  String _statusFilter = 'All';
+  late String _statusFilter;
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    _statusFilter = widget.initialStatusFilter ?? 'All';
     _scrollController.addListener(_onScroll);
   }
 
@@ -140,7 +143,54 @@ class _OrderListScreenState extends State<OrderListScreen> {
                         ),
                       );
                     }
-                    return OrderCard(order: filteredOrders[index]);
+                    final order = filteredOrders[index];
+                    return Dismissible(
+                      key: Key(order.id),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20.0),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                        child: const Icon(Icons.delete_outline, color: Colors.white, size: 28),
+                      ),
+                      confirmDismiss: (direction) async {
+                        return await showDialog<bool>(
+                          context: context,
+                          builder: (BuildContext dialogContext) {
+                            return AlertDialog(
+                              title: const Text('Delete Order'),
+                              content: Text('Are you sure you want to delete order ${order.id}? This action cannot be undone.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      onDismissed: (direction) async {
+                        try {
+                          await context.read<OrderProvider>().deleteOrder(order.id);
+                          if (!context.mounted) return;
+                          context.showSuccessSnackBar('Order deleted successfully');
+                        } catch (e) {
+                          if (!context.mounted) return;
+                          context.showErrorSnackBar('Failed to delete order: $e');
+                        }
+                      },
+                      child: OrderCard(order: order),
+                    );
                   },
                 );
               },

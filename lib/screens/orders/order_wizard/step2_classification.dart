@@ -42,7 +42,17 @@ class Step2Classification extends StatelessWidget {
         DropdownButtonFormField<String>(
           initialValue: status,
           decoration: const InputDecoration(labelText: 'Initial Status', prefixIcon: Icon(Icons.info_outline)),
-          items: ['Pending', 'In Progress', 'Completed'].map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+          items: {
+            'Pending',
+            'In Progress',
+            'Waiting for Parts',
+            'Completed',
+            'Delivered',
+            'Picked Up',
+            'Assigned',
+            'Diagnosed',
+            status,
+          }.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
           onChanged: (v) => onStatusChanged(v!),
         ),
         const SizedBox(height: 20),
@@ -58,8 +68,8 @@ class Step2Classification extends StatelessWidget {
             final date = await showDatePicker(
               context: context,
               initialDate: serviceDate,
-              firstDate: DateTime.now().subtract(const Duration(days: 30)),
-              lastDate: DateTime.now().add(const Duration(days: 365)),
+              firstDate: DateTime(1900),
+              lastDate: DateTime(2100),
             );
             if (date != null) onDateChanged(date);
           },

@@ -6,7 +6,6 @@ import '../../notifications/notification_center_screen.dart';
 import '../../financials/revenue_report_screen.dart';
 import '../../appointments/appointment_list_screen.dart';
 import '../../inventory/parts_catalog_screen.dart';
-import '../../technicians/technician_list_screen.dart';
 
 class QuickActionsRow extends StatelessWidget {
   const QuickActionsRow({super.key});
@@ -51,13 +50,6 @@ class QuickActionsRow extends StatelessWidget {
             label: 'Inventory',
             color: Colors.blueGrey,
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PartsCatalogScreen())),
-          ),
-          _buildActionItem(
-            context,
-            icon: Icons.engineering_outlined,
-            label: 'Techs',
-            color: Colors.brown,
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TechnicianListScreen())),
           ),
         ],
       ),

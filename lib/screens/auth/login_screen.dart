@@ -130,16 +130,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                       : const Text('Login'),
                 ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: isLoading
-                      ? null
-                      : () {
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .bypassLogin();
-                        },
-                  child: const Text('Bypass Login (Dev Mode)'),
-                ),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

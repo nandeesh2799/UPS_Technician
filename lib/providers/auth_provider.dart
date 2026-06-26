@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../services/firebase_service.dart';
 import '../models/user_model.dart';
-import '../utils/constants.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -14,23 +13,11 @@ class AuthProvider extends ChangeNotifier {
   bool _isLoading = true;
   String? _error;
   StreamSubscription? _userSub;
-  bool _isBypassed = false;
-
   User? get user => _user;
-  bool get isBypassed => _isBypassed;
-  UserModel? get userModel => _isBypassed
-      ? UserModel(
-          uid: 'dev_bypass_uid',
-          email: 'bypass@karunadu.com',
-          name: 'Developer Mode',
-          role: AppConstants.roleAdmin,
-          centerId: AppConstants.defaultCenterId,
-          createdAt: DateTime.now(),
-        )
-      : _userModel;
+  UserModel? get userModel => _userModel;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  bool get isAuthenticated => _user != null || _isBypassed;
+  bool get isAuthenticated => _user != null;
 
   AuthProvider() {
     _initAuthStream();
@@ -125,17 +112,10 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> signOut() async {
-    _isBypassed = false;
     await _authService.signOut();
     _user = null;
     _userModel = null;
     _error = null;
-    notifyListeners();
-  }
-
-  void bypassLogin() {
-    _isBypassed = true;
-    _isLoading = false;
     notifyListeners();
   }
 }

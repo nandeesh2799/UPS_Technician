@@ -3,9 +3,22 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/order_provider.dart';
 
-class RevenueChart extends StatelessWidget {
+class RevenueChart extends StatefulWidget {
   final String timeframe;
   const RevenueChart({super.key, this.timeframe = 'Monthly'});
+
+  @override
+  State<RevenueChart> createState() => _RevenueChartState();
+}
+
+class _RevenueChartState extends State<RevenueChart> {
+  late String _timeframe;
+
+  @override
+  void initState() {
+    super.initState();
+    _timeframe = widget.timeframe;
+  }
 
   String _formatAmount(double value) {
     if (value >= 1000000) {
@@ -26,7 +39,7 @@ class RevenueChart extends StatelessWidget {
         final now = DateTime.now();
         final List<FlSpot> spots = [];
 
-        if (timeframe == 'Daily') {
+        if (_timeframe == 'Daily') {
           for (int i = 0; i < 24; i++) {
             final targetHour = now.subtract(Duration(hours: 23 - i));
             double hourlyRevenue = 0.0;
@@ -40,7 +53,7 @@ class RevenueChart extends StatelessWidget {
             }
             spots.add(FlSpot(i.toDouble(), hourlyRevenue));
           }
-        } else if (timeframe == 'Weekly') {
+        } else if (_timeframe == 'Weekly') {
           for (int i = 0; i < 7; i++) {
             final date = DateTime(now.year, now.month, now.day).subtract(Duration(days: 6 - i));
             double dailyRevenue = 0.0;
@@ -53,7 +66,7 @@ class RevenueChart extends StatelessWidget {
             }
             spots.add(FlSpot(i.toDouble(), dailyRevenue));
           }
-        } else if (timeframe == 'Yearly') {
+        } else if (_timeframe == 'Yearly') {
           for (int i = 0; i < 12; i++) {
             final monthOffset = now.month - (11 - i);
             final year = now.year + (monthOffset <= 0 ? (monthOffset - 12) ~/ 12 : 0);
@@ -104,14 +117,22 @@ class RevenueChart extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '${timeframe == 'Daily' ? 'Hourly' : (timeframe == 'Weekly' ? 'Daily' : (timeframe == 'Yearly' ? 'Monthly' : 'Daily'))} Revenue Trend'.toUpperCase(), 
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade500,
-                  letterSpacing: 1.2,
-                  fontSize: 11,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${_timeframe == 'Daily' ? 'Hourly' : (_timeframe == 'Weekly' ? 'Daily' : (_timeframe == 'Yearly' ? 'Monthly' : 'Daily'))} Revenue Trend'.toUpperCase(), 
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey.shade500,
+                        letterSpacing: 1.2,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                  _buildTimeframeSelector(),
+                ],
               ),
               const SizedBox(height: 24),
               SizedBox(
@@ -120,6 +141,25 @@ class RevenueChart extends StatelessWidget {
                   child: LineChart(
                     LineChartData(
                       gridData: const FlGridData(show: false),
+                      lineTouchData: LineTouchData(
+                        touchTooltipData: LineTouchTooltipData(
+                          getTooltipColor: (touchedSpot) => Theme.of(context).primaryColor.withValues(alpha: 0.95),
+                          tooltipBorder: const BorderSide(color: Colors.white24, width: 1),
+                          tooltipRoundedRadius: 10,
+                          getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                            return touchedBarSpots.map((barSpot) {
+                              return LineTooltipItem(
+                                '₹${barSpot.y.toStringAsFixed(0)}',
+                                const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              );
+                            }).toList();
+                          },
+                        ),
+                      ),
                       titlesData: FlTitlesData(
                         show: true,
                         rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -151,10 +191,10 @@ class RevenueChart extends StatelessWidget {
                           sideTitles: SideTitles(
                             showTitles: true, 
                             reservedSize: 30, 
-                            interval: timeframe == 'Daily' ? 4 : (timeframe == 'Weekly' ? 1 : (timeframe == 'Yearly' ? 1 : 7)),
+                            interval: _timeframe == 'Daily' ? 4 : (_timeframe == 'Weekly' ? 1 : (_timeframe == 'Yearly' ? 1 : 7)),
                             getTitlesWidget: (value, meta) {
                               final intVal = value.toInt();
-                              if (timeframe == 'Daily') {
+                              if (_timeframe == 'Daily') {
                                 if (intVal < 0 || intVal >= 24) return const SizedBox.shrink();
                                 final targetHour = now.subtract(Duration(hours: 23 - intVal));
                                 return SideTitleWidget(
@@ -167,7 +207,7 @@ class RevenueChart extends StatelessWidget {
                                     ),
                                   ),
                                 );
-                              } else if (timeframe == 'Weekly') {
+                              } else if (_timeframe == 'Weekly') {
                                 if (intVal < 0 || intVal >= 7) return const SizedBox.shrink();
                                 final targetDate = now.subtract(Duration(days: 6 - intVal));
                                 final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -181,7 +221,7 @@ class RevenueChart extends StatelessWidget {
                                     ),
                                   ),
                                 );
-                              } else if (timeframe == 'Yearly') {
+                              } else if (_timeframe == 'Yearly') {
                                 if (intVal < 0 || intVal >= 12) return const SizedBox.shrink();
                                 final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                                 final monthOffset = now.month - (11 - intVal);
@@ -238,6 +278,49 @@ class RevenueChart extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildTimeframeSelector() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        children: ['Daily', 'Weekly', 'Monthly', 'Yearly'].map((tf) {
+          final isSelected = _timeframe == tf;
+          return GestureDetector(
+            onTap: () => setState(() => _timeframe = tf),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.white : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        )
+                      ]
+                    : null,
+              ),
+              child: Text(
+                tf,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: isSelected ? Theme.of(context).primaryColor : Colors.grey.shade600,
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }

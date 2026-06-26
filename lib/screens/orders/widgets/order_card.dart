@@ -82,7 +82,12 @@ class OrderCard extends StatelessWidget {
                       StatusChip(status: order.status),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  if (!isCompact) ...[
+                    const SizedBox(height: 12),
+                    _buildMiniProgressTracker(context, order.status),
+                    const SizedBox(height: 16),
+                  ] else
+                    const SizedBox(height: 20),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     decoration: BoxDecoration(
@@ -141,6 +146,16 @@ class OrderCard extends StatelessWidget {
                           color: Colors.green, // Using a basic material color for WhatsApp
                           onPressed: () => launchUrl(Uri.parse('whatsapp://send?phone=${order.phone}'), mode: LaunchMode.externalApplication),
                         ),
+                        const SizedBox(width: 12),
+                        _buildActionButton(
+                          context,
+                          icon: Icons.directions_outlined,
+                          color: Colors.indigo,
+                          onPressed: () => launchUrl(
+                            Uri.parse('https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(order.address)}'),
+                            mode: LaunchMode.externalApplication,
+                          ),
+                        ),
                         const Spacer(),
                         Flexible(
                           child: TextButton(
@@ -190,6 +205,92 @@ class OrderCard extends StatelessWidget {
         onPressed: onPressed,
         constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
       ),
+    );
+  }
+
+  Widget _buildMiniProgressTracker(BuildContext context, String status) {
+    int stepIndex = 0;
+    if (status == 'Pending' || status == 'Assigned') {
+      stepIndex = 0;
+    } else if (status == 'In Progress' || status == 'Diagnosed' || status == 'Waiting for Parts') {
+      stepIndex = 1;
+    } else if (status == 'Completed') {
+      stepIndex = 2;
+    } else if (status == 'Delivered' || status == 'Picked Up') {
+      stepIndex = 3;
+    }
+
+    final steps = ['Pending', 'Progress', 'Done', 'Delivered'];
+    
+    return Column(
+      children: [
+        Row(
+          children: List.generate(steps.length, (index) {
+            final isCompleted = index <= stepIndex;
+            final isCurrent = index == stepIndex;
+            final isLast = index == steps.length - 1;
+            
+            return Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 2,
+                      color: index == 0
+                          ? Colors.transparent
+                          : (isCompleted ? Theme.of(context).primaryColor : Colors.grey.shade200),
+                    ),
+                  ),
+                  Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isCompleted ? Theme.of(context).primaryColor : Colors.white,
+                      border: Border.all(
+                        color: isCompleted ? Theme.of(context).primaryColor : Colors.grey.shade300,
+                        width: isCurrent ? 3.5 : 1.5,
+                      ),
+                    ),
+                    child: isCompleted && !isCurrent
+                        ? const Center(child: Icon(Icons.check, size: 8, color: Colors.white))
+                        : null,
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 2,
+                      color: isLast
+                          ? Colors.transparent
+                          : (index < stepIndex ? Theme.of(context).primaryColor : Colors.grey.shade200),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+        const SizedBox(height: 4),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(steps.length, (index) {
+            final isCompleted = index <= stepIndex;
+            final isCurrent = index == stepIndex;
+            return Expanded(
+              child: Text(
+                steps[index],
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 8,
+                  fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
+                  color: isCurrent
+                      ? Theme.of(context).primaryColor
+                      : (isCompleted ? Colors.grey.shade700 : Colors.grey.shade400),
+                ),
+              ),
+            );
+          }),
+        ),
+      ],
     );
   }
 }

@@ -303,24 +303,48 @@ class _StatsGrid extends StatelessWidget {
               value: provider.orders.length,
               icon: Icons.assignment,
               color: AppColors.secondary,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const OrderListScreen(initialStatusFilter: 'All'),
+                ),
+              ),
             ),
             KpiCard(
               title: 'Pending',
               value: provider.pendingOrders.length,
               icon: Icons.timer_outlined,
               color: AppColors.warning,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const OrderListScreen(initialStatusFilter: 'Pending'),
+                ),
+              ),
             ),
             KpiCard(
               title: 'In Progress',
               value: provider.inProgressOrders.length,
               icon: Icons.sync,
               color: Colors.blue,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const OrderListScreen(initialStatusFilter: 'In Progress'),
+                ),
+              ),
             ),
             KpiCard(
               title: 'Completed',
               value: provider.completedOrders.length,
               icon: Icons.check_circle_outline,
               color: AppColors.success,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const OrderListScreen(initialStatusFilter: 'Completed'),
+                ),
+              ),
             ),
           ],
         ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1, end: 0);

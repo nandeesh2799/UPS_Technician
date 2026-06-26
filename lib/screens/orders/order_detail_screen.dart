@@ -232,6 +232,55 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     }
   }
 
+  Future<void> _deleteOrder(BuildContext context, OrderModel order) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Delete Order'),
+          content: Text('Are you sure you want to delete order ${order.id}? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      if (!context.mounted) return;
+      setState(() => _isUpdating = true);
+      try {
+        await context.read<OrderProvider>().deleteOrder(order.id);
+        navigator.pop(); // Go back to the list
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Order deleted successfully'),
+            backgroundColor: Color(0xFF2E7D32),
+          ),
+        );
+      } catch (e) {
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Failed to delete order: $e'),
+            backgroundColor: const Color(0xFFC62828),
+          ),
+        );
+      } finally {
+        if (mounted) setState(() => _isUpdating = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Selector<OrderProvider, OrderModel>(
@@ -247,6 +296,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               IconButton(
                 icon: const Icon(Icons.edit),
                 onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => OrderWizardScreen(order: order))),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                onPressed: () => _deleteOrder(context, order),
               ),
             ],
           ),
@@ -421,6 +474,32 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   }
                 } catch (e) {
                   if (capturedContext.mounted) capturedContext.showErrorSnackBar('Could not launch SMS');
+                }
+              }
+            ),
+            IconButton(
+              icon: const Icon(Icons.directions, color: Colors.blue), 
+              tooltip: 'Navigate to customer location',
+              onPressed: () async {
+                final capturedContext = context;
+                final encodedAddress = Uri.encodeComponent(order.address);
+                final googleMapsUrl = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedAddress');
+                final appleMapsUrl = Uri.parse('https://maps.apple.com/?q=$encodedAddress');
+                
+                try {
+                  if (await canLaunchUrl(googleMapsUrl)) {
+                    await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
+                  } else if (await canLaunchUrl(appleMapsUrl)) {
+                    await launchUrl(appleMapsUrl, mode: LaunchMode.externalApplication);
+                  } else {
+                    if (capturedContext.mounted) {
+                      capturedContext.showErrorSnackBar('Could not launch maps navigation');
+                    }
+                  }
+                } catch (e) {
+                  if (capturedContext.mounted) {
+                    capturedContext.showErrorSnackBar('Could not launch maps navigation');
+                  }
                 }
               }
             ),

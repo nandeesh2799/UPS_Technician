@@ -12,16 +12,8 @@ class AppearanceScreen extends StatelessWidget {
       body: Consumer<SettingsProvider>(
         builder: (context, provider, child) {
           return ListView(
-            children: [
+            children: const [
               ListTile(
-                title: const Text('Dark Mode'),
-                trailing: Switch(
-                  value: provider.isDarkMode,
-                  onChanged: (value) => provider.toggleTheme(),
-                ),
-              ),
-              const Divider(),
-              const ListTile(
                 title: Text('Primary Color'),
                 subtitle: Text('Deep Indigo (Default)'),
                 // Could implement color picker here
