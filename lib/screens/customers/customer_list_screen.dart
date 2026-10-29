@@ -67,8 +67,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
                 return ListView.builder(
                   controller: _scrollController,
-                  padding: const EdgeInsets.all(16),
+                  // ignore: deprecated_member_use
                   cacheExtent: MediaQuery.of(context).size.height * 2,
+                  padding: const EdgeInsets.all(16),
                   itemCount: filtered.length + (provider.hasMore ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == filtered.length) {

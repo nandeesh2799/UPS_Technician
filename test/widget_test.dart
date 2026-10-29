@@ -17,6 +17,8 @@ import 'package:ups_service_manager/screens/splash/splash_screen.dart';
 import 'package:ups_service_manager/screens/main_screen.dart';
 import 'package:ups_service_manager/screens/auth/login_screen.dart';
 import 'package:ups_service_manager/models/company_settings_model.dart';
+import 'package:ups_service_manager/models/pending_operation_model.dart';
+import 'package:ups_service_manager/utils/hive_adapters.dart';
 import 'package:ups_service_manager/utils/constants.dart';
 
 class MockAuthProvider extends Mock implements AuthProvider {}
@@ -43,8 +45,17 @@ void main() {
   setUpAll(() async {
     // Initialize Hive for tests
     Hive.init('test_hive_path');
+    if (!Hive.isAdapterRegistered(20)) {
+      Hive.registerAdapter(DateTimeAdapter());
+    }
+    if (!Hive.isAdapterRegistered(21)) {
+      Hive.registerAdapter(NullableDateTimeAdapter());
+    }
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter(PendingOperationModelAdapter());
+    }
     if (!Hive.isBoxOpen(AppConstants.pendingOperationsBox)) {
-      await Hive.openBox(AppConstants.pendingOperationsBox);
+      await Hive.openBox<PendingOperationModel>(AppConstants.pendingOperationsBox);
     }
   });
 
@@ -64,7 +75,9 @@ void main() {
     when(() => mockSettingsProvider.settings).thenReturn(CompanySettingsModel.defaultSettings());
     when(() => mockAuthProvider.isAuthenticated).thenReturn(false);
     when(() => mockAuthProvider.isLoading).thenReturn(false);
-    
+    when(() => mockAuthProvider.userModel).thenReturn(null);
+    when(() => mockAuthProvider.user).thenReturn(null);
+
     when(() => mockOrderProvider.orders).thenReturn([]);
     when(() => mockOrderProvider.isLoading).thenReturn(false);
     when(() => mockOrderProvider.pendingOrders).thenReturn([]);
@@ -76,6 +89,8 @@ void main() {
     when(() => mockOrderProvider.serviceTypeDistribution).thenReturn({});
     when(() => mockOrderProvider.orderStatusDistribution).thenReturn({});
     when(() => mockOrderProvider.revenueByDay).thenReturn({});
+    when(() => mockOrderProvider.monthlyPerformancePercentage).thenReturn('0%');
+    when(() => mockOrderProvider.isRevenueTrendUp).thenReturn(true);
     
     when(() => mockCustomerProvider.customers).thenReturn([]);
     when(() => mockCustomerProvider.isLoading).thenReturn(false);

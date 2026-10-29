@@ -142,7 +142,7 @@ class _AddEditTechnicianSheetState extends State<AddEditTechnicianSheet> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _selectedRole,
+                initialValue: _selectedRole,
                 decoration: const InputDecoration(
                   labelText: 'Role',
                   prefixIcon: Icon(Icons.security),
@@ -160,7 +160,7 @@ class _AddEditTechnicianSheetState extends State<AddEditTechnicianSheet> {
                   if (branchProvider.branches.isEmpty) return const SizedBox.shrink();
                   
                   return DropdownButtonFormField<String>(
-                    value: _selectedBranchId,
+                    initialValue: _selectedBranchId,
                     decoration: const InputDecoration(
                       labelText: 'Branch / Center',
                       prefixIcon: Icon(Icons.business),

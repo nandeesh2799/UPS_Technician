@@ -1,5 +1,12 @@
 # UPS Service Manager 🛠️
 
+[![Flutter CI](https://github.com/nandeesh2799/UPS_Technician/actions/workflows/ci.yml/badge.svg)](https://github.com/nandeesh2799/UPS_Technician/actions/workflows/ci.yml)
+![Flutter](https://img.shields.io/badge/Flutter-3.44.1-02569B?logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-3.12.1-0175C2?logo=dart&logoColor=white)
+![Tests](https://img.shields.io/badge/Tests-14%20Passed-brightgreen?logo=flutter)
+![Firebase](https://img.shields.io/badge/Firebase-Firestore%20%7C%20Auth%20%7C%20Storage-FFCA28?logo=firebase&logoColor=black)
+![License](https://img.shields.io/badge/License-Proprietary-blue)
+
 An advanced enterprise Flutter application designed for UPS technicians and service centers to manage service orders, customer records, appointments, inventory, and branch operations. Built with offline-first capabilities, real-time Firebase syncing, automated PDF invoicing, WhatsApp notifications, and deep analytics.
 
 ---

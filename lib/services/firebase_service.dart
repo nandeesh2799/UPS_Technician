@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
@@ -317,7 +318,7 @@ class FirebaseService {
         await doc.reference.update({'role': role});
       }
     } catch (e) {
-      print('Error updating user role: $e');
+      debugPrint('Error updating user role: $e');
     }
   }
 

@@ -17,6 +17,7 @@ class RecentOrdersRow extends StatelessWidget {
       height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
+        // ignore: deprecated_member_use
         cacheExtent: 1000,
         itemCount: orders.length > 5 ? 5 : orders.length,
         itemBuilder: (context, index) {

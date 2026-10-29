@@ -131,8 +131,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
                 return ListView.builder(
                   controller: _scrollController,
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+                  // ignore: deprecated_member_use
                   cacheExtent: MediaQuery.of(context).size.height * 2,
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
                   itemCount: filteredOrders.length + (provider.hasMore ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == filteredOrders.length) {

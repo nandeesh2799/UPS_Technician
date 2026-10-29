@@ -23,7 +23,7 @@ class BranchProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }, onError: (e) {
-      print('Error listening to branches: $e');
+      debugPrint('Error listening to branches: $e');
       _isLoading = false;
       notifyListeners();
     });
