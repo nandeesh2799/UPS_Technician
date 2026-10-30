@@ -36,7 +36,7 @@ dependencies:
   flutter_local_notifications: ^17.2.0
 
   # Connectivity
-  connectivity_plus: ^6.0.3
+  connectivity_plus: ^7.3.1
 
   # UI & Animations
   shimmer: ^3.0.0
