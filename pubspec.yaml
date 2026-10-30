@@ -41,7 +41,7 @@ dependencies:
   # UI & Animations
   shimmer: ^3.0.0
   flutter_speed_dial: ^7.0.0
-  google_fonts: ^6.2.1
+  google_fonts: ^8.2.1
 
   # Utilities
   url_launcher: ^6.3.0
