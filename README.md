@@ -77,7 +77,7 @@ lib/
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/nandeesh2799/UPS_Technician.git
-   cd ups_service
+   cd UPS_Technician
    ```
 
 2. **Add Firebase configuration**:
